@@ -57,3 +57,30 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages # This creates a new branch for the website
           publish_dir: allure-report
+
+      # 7. Send Email Notification
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v3
+        if: always() # Send the mail even if the tests failed!
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "🚀 SnapTest: New Automation Report Generated"
+          to: ${{ secrets.RECEIVER_EMAIL }}
+          from: "SnapTest Automation Bot"
+          body: |
+            Hello,
+
+            A new automation test run has completed for the SnapTest project.
+
+            📊 View the Live Report here: 
+            https://amogh4432.github.io/SnapTest_Automation/
+
+            Status: ${{ job.status }}
+            Repository: ${{ github.repository }}
+            Commit: ${{ github.event.head_commit.message }}
+
+            Best regards,
+            Your SDET Pipeline
