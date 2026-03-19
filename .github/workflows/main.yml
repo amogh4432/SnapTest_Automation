@@ -4,8 +4,9 @@ name: SnapTest CI Pipeline
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # ADD THIS SECTION:
+  repository_dispatch:
+    types: [ web_app_updated ]
 
 jobs:
   test-execution:
