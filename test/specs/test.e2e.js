@@ -13,7 +13,7 @@ describe('My Login application', () => {
         await expect(SecurePage.adminDashboard).toHaveText(
             expect.stringContaining('Admin Dashboard'))
         await addStep(`Admin Dashboard has correct text content: ${await SecurePage.adminDashboard.getText()}`)
-        await addStep('Login test completed successfully 2nd attempt')
+        await addStep('Login test completed successfully final attempt')
     })
 })
 
