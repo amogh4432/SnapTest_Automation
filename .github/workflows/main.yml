@@ -1,0 +1,40 @@
+name: SnapTest CI Pipeline
+
+# Trigger: Run every time code is pushed to the 'main' branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-execution:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Pull the code from your repository onto the GitHub runner
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Build the Docker image (same command you used locally)
+      - name: Build Docker Image
+        run: docker build -t snaptest-image .
+
+      # 3. Run the container and mount a volume
+      # We map the runner's workspace to the container's app folder
+      # This allows allure-results to "leak" out into the GitHub runner
+      - name: Run E2E Tests in Docker
+        run: |
+          docker run --rm \
+          -v ${{ github.workspace }}/allure-results:/usr/src/app/allure-results \
+          snaptest-image
+
+      # 4. Upload Artifacts (The Results)
+      # This saves the folder so you can download it from the GitHub Actions UI
+      - name: Upload Allure Results
+        if: always() # Run this even if tests fail!
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+          retention-days: 5
